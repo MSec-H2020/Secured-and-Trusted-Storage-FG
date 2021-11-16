@@ -1,0 +1,568 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Security & Storage Funtional Group API",
+    "description": "This API provides interfaces to the data for the Security & Storage Funtional Group"
+  },
+  "servers": [
+    {
+      "url": "/msec-security-storage-fg-api/"
+    }
+  ], 
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }  
+  },
+  "paths": {
+    "/token": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {                  
+                  "grant_type": {
+                    "type": "string"
+                  },
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "client_secret": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "access_token": {
+              "type": "string"
+            },
+            "expires_in": {
+              "type": "integer"
+            },
+            "refresh_expires_in": {
+              "type": "integer"
+            },
+            "refresh_token": {
+              "type": "string"
+            },
+            "token_type": {
+              "type": "string"
+            },
+            "not-before-policy": {
+              "type": "integer"
+            },
+            "session_state": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string"
+            }
+          }
+        },
+        "produces": [
+          "application/x-www-form-urlencoded"
+        ],
+        "consumes": [
+          "application/json"
+        ]
+      }
+    },
+    "/logout": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {                  
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "client_secret": {
+                    "type": "string"
+                  },
+                  "refresh_token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+          }
+        },
+        "produces": [
+          "application/x-www-form-urlencoded"
+        ],
+        "consumes": [
+          "application/json"
+        ]
+      }
+    },
+    "/enroll/{ownerHash}": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {                  
+                  "mnemonic": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ownerHash",
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/disenroll/{ownerHash}": {
+      "delete": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {                  
+                  "mnemonic": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ownerHash",
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/read/{ownerHash}/{dataHash}": {
+      "get": {
+        "parameters": [
+          {
+            "type": "string",
+            "name": "dataHash",
+            "required": true,
+            "in": "path"
+          },
+          {
+            "type": "string",
+            "name": "ownerHash",
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/DataDto"
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/readAll/{ownerHash}": {
+      "get": {
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ownerHash",
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/DataDto"
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/save/{ownerHash}": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/OnlyDataDto"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ownerHash",
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "produces": [
+          "text/plain"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/delete/{ownerHash}/{dataHash}": {
+      "delete": {
+        "parameters": [
+          {
+            "type": "string",
+            "name": "dataHash",
+            "required": true,
+            "in": "path"
+          },
+          {
+            "type": "string",
+            "name": "ownerHash",
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/deleteAll/{ownerHash}": {
+      "delete": {
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ownerHash",
+            "required": true,
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/getMsecTokenBalance": {
+      "get": {
+        "parameters": [
+          {
+            "type": "string",
+            "name": "publicKey",
+            "required": true,
+            "in": "query",
+            "example": "0x87611cc576bf83e9a2aa252f0dc105bf555acd04f86bf88b8433b33054edaf7d"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""            
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/addScoreForTransaction": {
+      "post": {
+        "parameters": [
+          {
+            "type": "string",
+            "name": "user",
+            "required": true,
+            "in": "query",
+            "example": "userId"
+          },
+          {
+            "type": "string",
+            "name": "transaction",
+            "required": true,
+            "in": "query",
+            "example": "transactionHash"
+          },
+          {
+            "type": "string",
+            "name": "productId",
+            "required": true,
+            "in": "query",
+            "example": "productId"
+          },
+          {
+            "type": "number",
+            "name": "score",
+            "required": true,
+            "in": "query",
+            "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""            
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/getRankingAll": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": ""            
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/getRankingOfProvider": {
+      "get": {
+        "parameters": [
+          {
+            "type": "string",
+            "name": "providerId",
+            "required": true,
+            "in": "query",
+            "example": "providerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""            
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/getAllSensors": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": ""            
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+
+  },
+  
+  "definitions": {    
+    "Date": {
+      "type": "object",
+      "properties": {}
+    },
+    "OnlyDataDto": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        }
+      }
+    },
+    "DataDto": {
+      "type": "object",
+      "properties": {
+        "dataHash": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

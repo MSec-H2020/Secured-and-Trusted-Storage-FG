@@ -1,0 +1,29 @@
+{
+  "name": "security-storage-fg-gateway",
+  "description": "Security and storage functional group gateway",
+  "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
+  "files": [
+    "/dist",
+    "package.json"
+  ],
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc && npm run copy-files",
+    "copy-files": "copyfiles -f ./src/config/*.yml ./dist/config/ && copyfiles -f ./src/plugins/swagger/*.json ./dist/plugins/swagger/ && copyfiles -f ./src/config/models/*.json ./dist/config/models/",
+    "start": "cross-env NODE_ENV=local node dist/main.js"
+  },
+  "dependencies": {
+    "copyfiles": "^2.4.1",
+    "cross-env": "^6.0.3",
+    "dotenv": "^8.2.0",
+    "express-gateway": "^1.16.10",
+    "express-gateway-keycloak": "0.0.40",
+    "swagger-ui-express": "^4.1.6",
+    "typescript": "3.9.7"
+  },
+  "devDependencies": {
+    "copyfiles": "2.4.1"
+  }
+}

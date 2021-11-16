@@ -1,0 +1,102 @@
+http:
+  port: 28104
+admin:
+  port: 9876
+  host: localhost
+serviceEndpoints:
+  keycloak:
+    url: ${KEYCLOAK_API_URL}
+  ccdb:
+    url: ${CCDB_API_URL}
+  blockchain:
+    url: ${BLOCKCHAIN_MIDDLEWARE_API_URL}
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+  - rewrite
+  - jwt
+apiEndpoints:
+  keycloak:
+    host: '*'
+    paths: 
+      - '/msec-security-storage-fg-api/token'
+      - '/msec-security-storage-fg-api/logout'
+  blockchain:
+    host: '*'
+    paths: 
+      - '/msec-security-storage-fg-api/getMsecTokenBalance'
+      - '/msec-security-storage-fg-api/addScoreForTransaction'
+      - '/msec-security-storage-fg-api/getRankingAll'
+      - '/msec-security-storage-fg-api/getRankingOfProvider'
+      - '/msec-security-storage-fg-api/getAllSensors'
+
+  ccdb:
+    host: '*'
+    paths: 
+      - '/msec-security-storage-fg-api/enroll/*'  
+      - '/msec-security-storage-fg-api/disenroll/*'  
+      - '/msec-security-storage-fg-api/read/*'  
+      - '/msec-security-storage-fg-api/readAll/*'  
+      - '/msec-security-storage-fg-api/save/*'  
+      - '/msec-security-storage-fg-api/delete/*'  
+      - '/msec-security-storage-fg-api/deleteAll/*'  
+pipelines:
+  keycloakApiPipeline:
+    apiEndpoints:
+      - keycloak
+    policies:
+      - rewrite:
+          action:
+            search: /msec-security-storage-fg-api/
+            replace: /
+      - log:
+          action:
+              message: 'AUTH Keycloak :: Method: ${req.method}, Url: ${req.originalUrl}'
+      - proxy:
+          action:
+              serviceEndpoint: keycloak 
+              changeOrigin: true
+  ccdbApiPipeline:
+    apiEndpoints:
+      - ccdb
+    policies:
+      - rewrite:
+          action:
+            search: /msec-security-storage-fg-api/
+            replace: /
+      - log:
+          action:
+              message: 'CCDB :: Method: ${req.method}, Url: ${req.originalUrl}'
+      - jwt:
+          action:
+            secretOrPublicKeyFile: ${PEM_FILE}
+            checkCredentialExistence: false
+      - proxy:
+          action:
+            serviceEndpoint: ccdb 
+            changeOrigin: true
+  blockchainMiddlewareApiPipeline:
+    apiEndpoints:
+      - blockchain
+    policies:      
+      - rewrite:
+          action:
+            search: /msec-security-storage-fg-api/
+            replace: /
+      - log:
+          action:
+              message: 'BLOCKCHAIN :: Method: ${req.method}, Url: ${req.originalUrl}'
+      - jwt:
+          action:
+            secretOrPublicKeyFile: ${PEM_FILE}
+            checkCredentialExistence: false
+      - proxy:
+          action:
+            serviceEndpoint: blockchain 
+            changeOrigin: true
+  
